@@ -8,7 +8,7 @@ exports.getAllProducts = (req, res, next) => {
     });
 };
 exports.getProductById = (req, res, next) => {
-  const productId = req.params.productId; 
+  const productId = req.params.productId;
   Product.findById(productId)
     .then((product) => res.send(product))
     .catch((err) => {
@@ -28,10 +28,17 @@ exports.postAddProduct = (req, res, next) => {
   product
     .save()
     .then((result) => {
-      console.log("created product");
+      console.log("created/updated  product");
     })
     .catch((err) => {
       console.log(err);
     });
   res.send(product);
+};
+
+exports.deleteProduct = (req, res, next) => {
+  const productId = req.params.productId;
+  Product.delete(productId)
+    .then(res.send("Product deleted successfully"))
+    .catch((err) => console.log(err));
 };
