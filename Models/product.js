@@ -2,7 +2,7 @@ const { getDb } = require("../util/database");
 const mongodb = require("mongodb");
 class Product {
   constructor(product) {
-    this._id = new mongodb.ObjectId(product.id);
+    this._id = product.id ? new mongodb.ObjectId(product.id) : null;
     this.title = product.title;
     this.price = product.price;
     this.description = product.description;
@@ -59,10 +59,11 @@ class Product {
       });
   }
 
-  static delete(productId){
-    const db = getDb()
-    return db.collection('products').deleteOne({_id: new mongodb.ObjectId(productId)})
-
+  static delete(productId) {
+    const db = getDb();
+    return db
+      .collection("products")
+      .deleteOne({ _id: new mongodb.ObjectId(productId) });
   }
 }
 module.exports = Product;
