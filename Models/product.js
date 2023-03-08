@@ -1,38 +1,53 @@
-const fs = require("fs");
-const path = require("path");
-module.exports = class Product {
-  constructor(title) {
-    this.title = title;
+const { getDb } = require("../util/database");
+const mongodb = require("mongodb");
+class Product {
+  constructor(product) {
+    this.title = product.title;
+    this.price = product.price;
+    this.description = product.description;
+    this.imageUrl = product.imageUrl;
   }
   save() {
-    const p = path.join(
-      path.dirname(process.mainModule.filename),
-      "data",
-      "products.json"
-    );
-    fs.readFile(p, (err, fileContent) => {
-      let products = [];
-      if (!err) {
-        products = JSON.parse(fileContent);
-      }
-      products.push(this);
-      fs.writeFile(p, JSON.stringify(products), (err) => {
+    const db = getDb();
+    return db
+      .collection("products")
+      .insertOne(this)
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((err) => {
         console.log(err);
       });
-    });
-    
   }
-  //the static keyworld allows us to call the method without instantiating the class
-  static fetchAll(callback) {
-    const p = path.join(
-      path.dirname(process.mainModule.filename),
-      "data",
-      "products.json"
-    );
-    fs.readFile(p, (err, fileContent) => {
-      if (err) return callback([]);
-     
-      return callback(JSON.parse(fileContent));
-    });
+
+  static fetchAll() {
+    const db = getDb();
+    return db
+      .collection("products")
+      .find()
+      .toArray()
+      .then((products) => {
+        console.log(products);
+        return products;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
-};
+
+  static findById(productId) {
+    const db = getDb();
+    return db
+      .collection("products")
+      .find({ _id: new mongodb.ObjectId(productId) })
+      .next()
+      .then((product) => {
+        console.log(product);
+        return product;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+}
+module.exports = Product;
