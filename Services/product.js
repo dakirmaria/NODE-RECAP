@@ -18,6 +18,7 @@ exports.getProductById = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
   const productObj = {
+    id: req.body.id,
     title: req.body.title,
     imageUrl: req.body.imageUrl,
     price: req.body.price,
@@ -32,5 +33,5 @@ exports.postAddProduct = (req, res, next) => {
     .catch((err) => {
       console.log(err);
     });
-  res.redirect("/products");
+  res.send(product);
 };
