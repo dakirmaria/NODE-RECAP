@@ -2,6 +2,7 @@ const { getDb } = require("../util/database");
 const mongodb = require("mongodb");
 class Product {
   constructor(product) {
+    this._id = new mongodb.ObjectId(product.id);
     this.title = product.title;
     this.price = product.price;
     this.description = product.description;
@@ -9,9 +10,17 @@ class Product {
   }
   save() {
     const db = getDb();
-    return db
-      .collection("products")
-      .insertOne(this)
+    let dbOp;
+    if (this._id) {
+      this.updatedAt = new Date();
+      console.log("update the product");
+      dbOp = db
+        .collection("products")
+        .updateOne({ _id: this._id }, { $set: this });
+    } else {
+      dbOp = db.collection("products").insertOne(this);
+    }
+    return dbOp
       .then((result) => {
         console.log(result);
       })
