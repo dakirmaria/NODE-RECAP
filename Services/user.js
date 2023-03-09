@@ -21,10 +21,11 @@ exports.getUserById = (req, res, next) => {
 };
 
 exports.postUser = (req, res, next) => {
-  const userObj = {
+ /*  const userObj = {
     name: req.body.name,
     email: req.body.email,
-  };
+  }; */
+
   const user = new User(userObj);
   user
     .save()

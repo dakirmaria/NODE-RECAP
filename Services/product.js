@@ -1,5 +1,5 @@
 const Product = require("../Models/product");
-
+const ProductBuilder = require("../Builders/productBuilder");
 exports.getAllProducts = (req, res, next) => {
   Product.fetchAll()
     .then((products) => res.send(products))
@@ -17,22 +17,26 @@ exports.getProductById = (req, res, next) => {
 };
 
 exports.postAddProduct = (req, res, next) => {
-  const productObj = {
-    id: req.body.id,
-    title: req.body.title,
-    imageUrl: req.body.imageUrl,
-    price: req.body.price,
-    description: req.body.description,
-  };
-  const product = new Product(productObj);
+  const productObj = new ProductBuilder(req.body.id)
+    .withName(req.body.name)
+    .withPrice(req.body.price)
+    .withDescription(req.body.description)
+    .withImage(req.body.image)
+    .withCategory(req.body.category)
+    .withBrand(req.body.brand)
+    .withRating(req.body.rating)
+    .withNumReviews(req.body.numReviews)
+    .withCountInStock(req.body.countInStock)
+    .build();
+   const product = new Product(productObj);
   product
     .save()
     .then((result) => {
-      console.log("created/updated  product");
+      console.log("created/updated product");
     })
     .catch((err) => {
       console.log(err);
-    });
+    }); 
   res.send(product);
 };
 
