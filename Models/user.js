@@ -4,6 +4,10 @@ class User {
   constructor(user) {
     this.name = user.name;
     this.email = user.email;
+    this.job = user.job;
+    this.age = user.age;
+    this.phone = user.phone;
+
   }
   save() {
     const db = getDb();
